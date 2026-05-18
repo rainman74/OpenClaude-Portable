@@ -6,28 +6,20 @@ set "ENGINE_DIR=%~dp0engine\"
 set "USB_ROOT=%ENGINE_DIR%..\"
 set "DATA_DIR=%USB_ROOT%data"
 set "ENV_FILE=%DATA_DIR%\ai_settings.env"
-
 set "NODE_DIR=%ENGINE_DIR%\node-win-x64"
 set "GIT_DIR=%ENGINE_DIR%\git-win-x64"
-
 set "GIT_BASH=%GIT_DIR%\bin\bash.exe"
 set "GIT_EXE=%GIT_DIR%\bin\git.exe"
-
 set "OC_BIN=%ENGINE_DIR%\node_modules\@gitlawb\openclaude\bin\openclaude"
-
 set "CLAUDE_CONFIG_DIR=%DATA_DIR%\openclaude"
 set "PORTABLE_HOME=%DATA_DIR%\home"
-
 set "XDG_CONFIG_HOME=%DATA_DIR%\config"
 set "XDG_DATA_HOME=%DATA_DIR%\app_data"
 set "XDG_CACHE_HOME=%DATA_DIR%\cache"
-
 set "APPDATA=%DATA_DIR%\app_data"
 set "LOCALAPPDATA=%DATA_DIR%\local_app_data"
-
 set "HOME=%PORTABLE_HOME%"
 set "USERPROFILE=%PORTABLE_HOME%"
-
 set "PATH=%NODE_DIR%;%GIT_DIR%\cmd;%GIT_DIR%\bin;%GIT_DIR%\usr\bin;%PATH%"
 set "CLAUDE_CODE_GIT_BASH_PATH=%GIT_BASH%"
 
@@ -74,6 +66,7 @@ set "CWD_DEFINED="
 if "%~1"=="" goto ARGS_DONE
 
 if /i "%~1"=="--resume" (
+
     if defined RESUME_DEFINED (
         echo [ERROR] Duplicate --resume parameter.
         pause
@@ -108,6 +101,7 @@ if /i "%~1"=="--resume" (
 )
 
 if /i "%~1"=="--cwd" (
+
     if defined CWD_DEFINED (
         echo [ERROR] Duplicate --cwd parameter.
         pause
@@ -135,6 +129,21 @@ if /i "%~1"=="--cwd" (
 )
 
 if not defined RESUME_DEFINED (
+
+    if exist "%~1\" (
+        if defined CWD_DEFINED (
+            echo [ERROR] Duplicate working directory argument.
+            pause
+            exit /b 1
+        )
+
+        set "WORK_DIR=%~1"
+        set "CWD_DEFINED=1"
+
+        shift
+        goto PARSE_ARGS
+    )
+
     echo(%~1| findstr /r /c:"^[A-Za-z0-9._-][A-Za-z0-9._-]*$" >nul
     if errorlevel 1 (
         echo [ERROR] Invalid positional session ID: %~1
@@ -150,6 +159,13 @@ if not defined RESUME_DEFINED (
 )
 
 if not defined CWD_DEFINED (
+
+    if /i "%~1:~0,2%"=="--" (
+        echo [ERROR] Unknown argument: %~1
+        pause
+        exit /b 1
+    )
+
     set "WORK_DIR=%~1"
     set "CWD_DEFINED=1"
 
@@ -183,6 +199,7 @@ set "PROVIDER_ARGS="
 if defined AI_PROVIDER (
     if /i "!AI_PROVIDER!"=="anthropic" set "PROVIDER_ARGS=--provider anthropic"
     if /i "!AI_PROVIDER!"=="ollama" set "PROVIDER_ARGS=--provider ollama"
+    if /i "!AI_PROVIDER!"=="gemini" set "PROVIDER_ARGS=--provider gemini"
     if /i "!AI_PROVIDER!"=="nvidia" set "PROVIDER_ARGS=--provider openai"
 )
 
