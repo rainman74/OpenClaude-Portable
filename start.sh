@@ -61,6 +61,9 @@ install_engine() {
     echo -e "${DIM}    Log: $NPM_INSTALL_LOG${RESET}"
     echo -e "${DIM}    Tip: USB 2.0 drives can look idle while npm writes many small files.${RESET}"
     cd "$ENGINE_DIR" || exit 1
+    if [ ! -f "$ENGINE_DIR/package.json" ]; then
+        echo '{"name":"openclaude-portable","version":"1.0.0","private":true}' > "$ENGINE_DIR/package.json"
+    fi
     mkdir -p "$NPM_CACHE_DIR"
     : > "$NPM_INSTALL_LOG"
     echo "[$(date)] Starting npm install @gitlawb/openclaude@latest" >> "$NPM_INSTALL_LOG"
