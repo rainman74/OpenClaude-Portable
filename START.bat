@@ -255,12 +255,12 @@ if !SKIP_UPDATE!==1 (
         pushd "%ENGINE_DIR%"
         call npm.cmd outdated @gitlawb/openclaude >nul 2>&1
         if errorlevel 1 (
-            echo   !YELLOW![~] New version detected! Upgrading...!RESET!
+            echo   !YELLOW![~] New version detected. Upgrading...!RESET!
             call :install_engine "Upgrading"
             if errorlevel 1 exit /b 1
-            echo   !GREEN![OK] Engine upgraded to latest version!!RESET!
+            echo   !GREEN![OK] Engine upgraded to latest version. !RESET!
         ) else (
-            echo   !GREEN![OK] Engine is up to date!!RESET!
+            echo   !GREEN![OK] Engine is up to date. !RESET!
         )
         popd
         echo !TODAY_DATE!>"!UPDATE_STAMP!"
